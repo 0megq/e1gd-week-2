@@ -14,7 +14,7 @@ public class BallBouncer : MonoBehaviour
     void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Ground")) {
-            //rb.AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * bounceForce, ForceMode2D.Impulse);
         }
     }
 }
