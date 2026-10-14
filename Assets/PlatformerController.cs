@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,14 +8,15 @@ public class PlatformerController : MonoBehaviour
     [SerializeField] float maxSpeed = 10.0f;
     [SerializeField] float moveAcceleration = 5.0f;
     [SerializeField] float groundFriction = 5.0f;
+    [SerializeField] float airFriction = 5.0f;
     [SerializeField] float jumpImpulse = 5.0f;
     [SerializeField] float dashSpeed = 20.0f;
     [SerializeField] float dashDuration = 0.2f;
+    [SerializeField] GroundChecker groundChecker;
 
     Rigidbody2D rb;
     SpriteRenderer renderer;
     Vector2 moveInput;
-    bool isGrounded;
 
     float timeSinceLastJumpPress = Mathf.Infinity;
     float timeOnGround = 0.0f;
@@ -37,6 +39,16 @@ public class PlatformerController : MonoBehaviour
     void Move() {
         timeSinceDash += Time.fixedDeltaTime;
         timeSinceLastJumpPress += Time.fixedDeltaTime;
+        
+        // dash reset and jump queueing
+        if (groundChecker.isGrounded)
+        {
+            canDash = true;
+            if (timeSinceLastJumpPress < jumpInputQueueTime)
+            {
+                rb.linearVelocityY = jumpImpulse;
+            }
+        }
 
         if (timeSinceDash < dashDuration)
         {
@@ -49,11 +61,11 @@ public class PlatformerController : MonoBehaviour
             rb.gravityScale = 1.0f;
         }
 
-        if (isGrounded) {
-            timeOnGround += Time.fixedDeltaTime;
-            // apply friction
-            rb.linearVelocityX = Mathf.MoveTowards(rb.linearVelocityX, 0, groundFriction * Time.fixedDeltaTime);
-        }
+        float friction = groundChecker.isGrounded ? groundFriction : airFriction;
+        timeOnGround += Time.fixedDeltaTime;
+        // apply friction
+        if (moveInput.x == 0.0f)
+            rb.linearVelocityX = Mathf.MoveTowards(rb.linearVelocityX, 0, friction * Time.fixedDeltaTime);
 
         // apply move input
         if (Mathf.Abs(moveInput.x) > 0 && (Mathf.Abs(rb.linearVelocityX) < maxSpeed || MathF.Sign(rb.linearVelocityX) != MathF.Sign(moveInput.x))) {
@@ -78,32 +90,9 @@ public class PlatformerController : MonoBehaviour
 
     void OnJump()
     {
-        if (isGrounded) {
-            canDash = true;
+        if (groundChecker.isGrounded)
             rb.linearVelocityY = jumpImpulse;
-        }
         else
             timeSinceLastJumpPress = 0f;
-    }
-
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("Ground"))
-        {
-            timeOnGround = 0f;
-            isGrounded = true;
-            if (timeSinceLastJumpPress < jumpInputQueueTime)
-            {
-                OnJump();
-            }
-        }
-    }
-
-    void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.collider.CompareTag("Ground"))
-        {
-            isGrounded = false;
-        }
     }
 }
