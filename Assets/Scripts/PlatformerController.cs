@@ -1,5 +1,4 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -38,6 +37,8 @@ public class PlatformerController : MonoBehaviour
         animator.SetInteger("yVel", MathF.Sign(rb.linearVelocityY));
         animator.SetBool("grounded", groundChecker.isGrounded);
         animator.SetBool("moving", rb.linearVelocityX != 0.0f);
+        if (UnityEngine.Random.value > 0.98)
+            animator.SetTrigger("hello");
     }
 
     void FixedUpdate()
@@ -61,7 +62,7 @@ public class PlatformerController : MonoBehaviour
 
         if (timeSinceDash < dashDuration)
         {
-            renderer.color = Color.skyBlue;
+            renderer.color = Color.darkRed;
             rb.gravityScale = 0.0f;
             return;
         } else
@@ -107,6 +108,7 @@ public class PlatformerController : MonoBehaviour
 
     void OnJump()
     {
+        Debug.Log("trying to hymp" + groundChecker.isGrounded);
         if (groundChecker.isGrounded) {
             rb.linearVelocityY = jumpImpulse;
         } else
