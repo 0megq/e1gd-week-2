@@ -13,6 +13,9 @@ public class PlatformerController : MonoBehaviour
     [SerializeField] float dashDuration = 0.2f;
     [SerializeField] GroundChecker groundChecker;
     [SerializeField] Animator animator;
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioClip jumpClip;
+    [SerializeField] AudioClip dashClip;
     public int coinsCollected = 0;
 
     Rigidbody2D rb;
@@ -56,7 +59,7 @@ public class PlatformerController : MonoBehaviour
             canDash = true;
             if (timeSinceLastJumpPress < jumpInputQueueTime)
             {
-                rb.linearVelocityY = jumpImpulse;
+                Jump();
             }
         }
 
@@ -104,14 +107,21 @@ public class PlatformerController : MonoBehaviour
         rb.linearVelocity = moveInput * dashSpeed;
         timeSinceDash = 0.0f;
         canDash = false;
+        audioSource.PlayOneShot(dashClip);
     }
 
     void OnJump()
     {
         Debug.Log("trying to hymp" + groundChecker.isGrounded);
         if (groundChecker.isGrounded) {
-            rb.linearVelocityY = jumpImpulse;
+            Jump();
         } else
             timeSinceLastJumpPress = 0f;
+    }
+
+    void Jump()
+    {
+        rb.linearVelocityY = jumpImpulse;
+        audioSource.PlayOneShot(jumpClip);
     }
 }
