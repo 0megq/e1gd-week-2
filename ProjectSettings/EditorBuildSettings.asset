@@ -6,8 +6,19 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 14d7fb76bec1823479b79131c0692ab7
+  - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/PhysicsScene.unity
+    guid: 4e61fdb0df70d104f8e1be42dddfdcec
+  - enabled: 1
+    path: Assets/Scenes/Platformer.unity
+    guid: a449022cad87631479917d0675564c3f
+  - enabled: 1
+    path: Assets/Scenes/TopDownScene.unity
+    guid: eb6b41444641e12479e9007f1e2daf8e
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  m_UseUCBPForAssetBundles: 0
